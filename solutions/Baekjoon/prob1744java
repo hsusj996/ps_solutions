@@ -1,0 +1,72 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
+public class App {
+    static int N;
+    static List<Integer> arr;
+
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        N = Integer.parseInt(br.readLine());
+
+        arr = new ArrayList<>();
+        for (int i = 0; i < N; i++) {
+            arr.add(Integer.parseInt(br.readLine()));
+        }
+
+        Collections.sort(arr, absComp);
+
+        int ans = 0;
+        int pBuffer = 0;
+        int mBuffer = 0;
+        boolean flag = false;
+
+        for (int i = 0; i < arr.size(); i++) {
+            int n = arr.get(i);
+
+            if (n == 0) {
+                flag = true;
+                continue;
+            } else if (n == 1) {
+                ans++;
+                continue;
+            } else if (n > 1) {
+                if (pBuffer > 0) {
+                    ans += (pBuffer * n);
+                    pBuffer = 0;
+                } else if (pBuffer == 0) {
+                    pBuffer = n;
+                }
+            } else {
+                if (mBuffer < 0) {
+                    ans += (mBuffer * n);
+                    mBuffer = 0;
+                } else if (mBuffer == 0) {
+                    mBuffer = n;
+                }
+            }
+        }
+
+        if (pBuffer != 0) {
+            ans += pBuffer;
+        }
+        if (mBuffer != 0) {
+            if (!flag) {
+                ans += mBuffer;
+            }
+        }
+
+        System.out.println(ans);
+    }
+
+    static Comparator<Integer> absComp = new Comparator<Integer>() {
+        @Override
+        public int compare(Integer o1, Integer o2) {
+            return Math.abs(o2) - Math.abs(o1);
+        }
+    };
+}
